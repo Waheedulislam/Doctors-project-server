@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const app = express();
 const port = 5000;
 
@@ -23,10 +23,36 @@ async function run() {
   try {
     await client.connect();
 
-    const AppointmentDB = client.db("AppointmentDB");
-    const AppointmentCollection = AppointmentDB.collection(
-      "AppointmentCollection"
-    );
+    const appointmentCollection = client
+      .db("AppointmentDB")
+      .collection("Appointment");
+    const doctorCollection = client.db("DoctorDB").collection("Doctor");
+
+    ////////////////////// Doctor Collection //////////////////////
+
+    //Doctor
+    app.get("/doctors", async (req, res) => {
+      const doctorsData = doctorCollection.find();
+      const result = await doctorsData.toArray();
+
+      res.send(result);
+    });
+    // Get singleDoctor
+    app.get("/doctors/:id", async (req, res) => {
+      const id = req.params.id;
+      const doctorData = await doctorCollection.findOne({
+        _id: new ObjectId(id),
+      });
+
+      res.send(doctorData);
+    });
+
+    app.get("/bikes/:id", async (req, res) => {
+      const id = req.params.id;
+      const bikeData = await bikesCollection.findOne({ _id: new ObjectId(id) });
+
+      res.send(bikeData);
+    });
 
     // Appointments
     app.post("/appointment", (req, res) => {});
