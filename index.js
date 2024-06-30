@@ -70,9 +70,15 @@ async function run() {
 
       res.send(result);
     });
+    ////////////////////// Appointment Collection //////////////////////
 
-    // Appointments
-    app.post("/appointment", (req, res) => {});
+    // POST Appointment
+    app.post("/appointment", async (req, res) => {
+      const appointData = req.body;
+      const result = await appointmentCollection.insertOne(appointData);
+
+      res.send(result);
+    });
 
     console.log("successfully connected to MongoDB!");
   } finally {
