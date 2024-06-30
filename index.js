@@ -26,11 +26,25 @@ async function run() {
     const appointmentCollection = client
       .db("AppointmentDB")
       .collection("Appointment");
+    //Doctor
     const doctorCollection = client.db("DoctorDB").collection("Doctor");
+
+    // DoctorSpecialties
+    const doctorSpecialtiesCollection = client
+      .db("DoctorSpecialtiesDB")
+      .collection("Specialties");
 
     ////////////////////// Doctor Collection //////////////////////
 
-    //Doctor
+    //Post Doctor
+    app.post("/doctors", async (req, res) => {
+      const doctorData = req.body;
+      const result = await doctorCollection.insertOne(doctorData);
+
+      res.send(result);
+    });
+
+    // Get Multiply Doctor
     app.get("/doctors", async (req, res) => {
       const doctorsData = doctorCollection.find();
       const result = await doctorsData.toArray();
@@ -47,11 +61,14 @@ async function run() {
       res.send(doctorData);
     });
 
-    app.get("/bikes/:id", async (req, res) => {
-      const id = req.params.id;
-      const bikeData = await bikesCollection.findOne({ _id: new ObjectId(id) });
+    ////////////////////// Doctor Specialties Collection //////////////////////
 
-      res.send(bikeData);
+    // GET Doctor Specialties
+    app.get("/doctorSpecialties", async (req, res) => {
+      const doctorSpecialties = doctorSpecialtiesCollection.find();
+      const result = await doctorSpecialties.toArray();
+
+      res.send(result);
     });
 
     // Appointments
