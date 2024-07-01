@@ -63,6 +63,24 @@ async function run() {
 
       res.send(doctorData);
     });
+    // Patch Doctor
+    app.patch("/doctors/:id", async (req, res) => {
+      const id = req.params.id;
+      const editDoctor = req.body;
+      const doctorData = await doctorCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: editDoctor }
+      );
+      res.send(doctorData);
+    });
+    // DELETE Doctor
+    app.delete("/doctors/:id", async (req, res) => {
+      const id = req.params.id;
+      const doctorDelete = await doctorCollection.deleteOne({
+        _id: new ObjectId(id),
+      });
+      res.send(doctorDelete);
+    });
 
     ////////////////////// Service Collection //////////////////////
 
@@ -73,13 +91,41 @@ async function run() {
 
       res.send(result);
     });
-    //GET Service
-
+    //GET Multiply Service
     app.get("/services", async (req, res) => {
       const serviceData = serviceCollection.find();
       const result = await serviceData.toArray();
 
       res.send(result);
+    });
+    //GET Single Service
+    app.get("/services/:id", async (req, res) => {
+      const id = req.params.id;
+      const serviceData = await serviceCollection.findOne({
+        _id: new ObjectId(id),
+      });
+
+      res.send(serviceData);
+    });
+
+    // Patch Service
+    app.patch("/services/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedService = req.body;
+      const serviceData = await serviceCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: updatedService }
+      );
+
+      res.send(serviceData);
+    });
+    // DELETE Service
+    app.delete("/services/:id", async (req, res) => {
+      const id = req.params.id;
+      const serviceDelete = await serviceCollection.deleteOne({
+        _id: new ObjectId(id),
+      });
+      res.send(serviceDelete);
     });
     ////////////////////// Doctor Specialties Collection //////////////////////
 
