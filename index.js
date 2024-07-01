@@ -23,11 +23,14 @@ async function run() {
   try {
     await client.connect();
 
+    // Appointment
     const appointmentCollection = client
       .db("AppointmentDB")
       .collection("Appointment");
     //Doctor
     const doctorCollection = client.db("DoctorDB").collection("Doctor");
+    // Service
+    const serviceCollection = client.db("ServiceDB").collection("Service");
 
     // DoctorSpecialties
     const doctorSpecialtiesCollection = client
@@ -61,6 +64,23 @@ async function run() {
       res.send(doctorData);
     });
 
+    ////////////////////// Service Collection //////////////////////
+
+    // POST Service
+    app.post("/services", async (req, res) => {
+      const serviceData = req.body;
+      const result = await serviceCollection.insertOne(serviceData);
+
+      res.send(result);
+    });
+    //GET Service
+
+    app.get("/services", async (req, res) => {
+      const serviceData = serviceCollection.find();
+      const result = await serviceData.toArray();
+
+      res.send(result);
+    });
     ////////////////////// Doctor Specialties Collection //////////////////////
 
     // GET Doctor Specialties
