@@ -31,11 +31,29 @@ async function run() {
     const doctorCollection = client.db("DoctorDB").collection("Doctor");
     // Service
     const serviceCollection = client.db("ServiceDB").collection("Service");
+    // Service
+    const usersCollection = client.db("UsersDB").collection("Users");
 
     // DoctorSpecialties
     const doctorSpecialtiesCollection = client
       .db("DoctorSpecialtiesDB")
       .collection("Specialties");
+
+    ////////////////////// User Collection ////////////////////////
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+
+      const query = { email: user?.email };
+      const existingUser = await usersCollection.findOne(query);
+      if (existingUser) {
+        return res.send({
+          massage: "User Already Exists",
+          insertedIn: null,
+        });
+      }
+      const result = await usersCollection.insertOne(user);
+      res.send(result);
+    });
 
     ////////////////////// Doctor Collection //////////////////////
 
