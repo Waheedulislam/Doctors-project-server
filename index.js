@@ -1,14 +1,15 @@
 const express = require("express");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+require("dotenv").config();
 const app = express();
+const jwt = require("jsonwebtoken");
 const port = 5000;
 
 app.use(cors());
 app.use(express.json());
 
-const uri =
-  "mongodb+srv://baoppyhossen1234:kHhw4pkN9jvktzQX@cluster0.mkesrbs.mongodb.net/?appName=Cluster0";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.mkesrbs.mongodb.net/?appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -40,6 +41,14 @@ async function run() {
       .collection("Specialties");
 
     ////////////////////// User Collection ////////////////////////
+    // Users GET
+    app.get("/users", async (req, res) => {
+      const result = await usersCollection.find().toArray();
+
+      res.send(result);
+    });
+
+    // Users Post
     app.post("/users", async (req, res) => {
       const user = req.body;
 
@@ -52,6 +61,27 @@ async function run() {
         });
       }
       const result = await usersCollection.insertOne(user);
+      res.send(result);
+    });
+    // Users Patch
+    app.patch("/users/admin/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updatedDoc = {
+        $set: {
+          role: "admin",
+        },
+      };
+      const result = await usersCollection.updateOne(filter, updatedDoc);
+
+      res.send(result);
+    });
+    // Users DELETE
+    app.delete("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await usersCollection.deleteOne(query);
+
       res.send(result);
     });
 
