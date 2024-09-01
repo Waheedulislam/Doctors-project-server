@@ -183,7 +183,7 @@ async function run() {
       );
       res.send(doctorData);
     });
-    // DELETE Doctor
+    // DELETE Doctors
     app.delete("/doctors/:id", async (req, res) => {
       const id = req.params.id;
       const doctorDelete = await doctorCollection.deleteOne({
